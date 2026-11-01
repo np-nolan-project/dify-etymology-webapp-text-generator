@@ -1,5 +1,7 @@
 'use client'
 
+import MarkdownOutput from '@/app/components/etymology-layout/components/MarkdownOutput'
+
 type OutputPanelProps = {
     data: {
         prefix?: string
@@ -11,79 +13,90 @@ type OutputPanelProps = {
 }
 
 const OutputPanel = ({ data }: OutputPanelProps) => {
+
+    // Markdown Copy
+    const handleCopy = async (text: string) => {
+        await navigator.clipboard.writeText(text)
+    }
+
     return (
         <section className="output-section">
-        <section className="output-sub-section">
-            <section id="prefix-section">
-            <h3 id="prefix-title" className="output-title">
-                Prefix
-            </h3>
-            <textarea
-                id="prefix-text"
-                className="output-text"
-                readOnly
-                aria-readonly="true"
-                placeholder="---"
-                value={data?.prefix ?? '---'}
-            />
+            <section className="output-subsection">
+                <section id="prefix-section">
+                    <div className="output-subheader-layout">
+                        <h3 id="prefix-title" className="output-title">
+                            Prefix
+                        </h3>
+                        <button className="copy-button" onClick={() => handleCopy(data?.prefix ?? '')}>
+                            Copy
+                        </button>
+                    </div>
+                    <MarkdownOutput
+                        id="prefix-text"
+                        content={data?.prefix ?? ''}
+                    />
+                </section>
+
+                <section id="root-section">
+                    <div className="output-subheader-layout">
+                        <h3 id="root-title" className="output-title">
+                            Root
+                        </h3>
+                        <button className="copy-button" onClick={() => handleCopy(data?.root ?? '')}>
+                            Copy
+                        </button>
+                    </div>
+                    <MarkdownOutput
+                        id="root-text"
+                        content={data?.root ?? ''}
+                    />
+                </section>
+
+                <section id="suffix-section">
+                    <div className="output-subheader-layout">
+                        <h3 id="suffix-title" className="output-title">
+                            Suffix
+                        </h3>
+                        <button className="copy-button" onClick={() => handleCopy(data?.suffix ?? '')}>
+                            Copy
+                        </button>
+                    </div>
+                    <MarkdownOutput
+                        id="suffix-text"
+                        content={data?.suffix ?? ''}
+                    />
+                </section>
             </section>
 
-            <section id="root-section">
-            <h3 id="root-title" className="output-title">
-                Root
-            </h3>
-            <textarea
-                id="root-text"
-                className="output-text"
-                readOnly
-                aria-readonly="true"
-                placeholder="---"
-                value={data?.root ?? '---'}
-            />
+            <section className="output-subsection">
+                <div className="output-subheader-layout">
+                    <h3 id="historical-path-title" className="output-title">
+                        Historical Path
+                    </h3>
+                    <button className="copy-button" onClick={() => handleCopy(data?.historicalPath ?? '')}>
+                            Copy
+                    </button>
+                </div>
+                <MarkdownOutput
+                    id="historical-path-text"
+                    content={data?.historicalPath ?? ''}
+                />
             </section>
 
-            <section id="suffix-section">
-            <h3 id="suffix-title" className="output-title">
-                Suffix
-            </h3>
-            <textarea
-                id="suffix-text"
-                className="output-text"
-                readOnly
-                aria-readonly="true"
-                placeholder="---"
-                value={data?.suffix ?? '---'}
-            />
+            <section className="output-subsection">
+                <div className="output-subheader-layout">
+                    <h3 id="related-words-title" className="output-title">
+                        Related Words
+                    </h3>
+                    <button className="copy-button" onClick={() => handleCopy(data?.relatedWords ?? '')}>
+                        Copy
+                    </button>
+                </div>
+                <MarkdownOutput
+                    id="related-words-text"
+                    content={data?.relatedWords ?? ''}
+                />
             </section>
-        </section>
-
-        <section className="output-sub-section">
-            <h3 id="historical-path-title" className="output-title">
-            Historical Path
-            </h3>
-            <textarea
-                id="historical-path-text"
-                className="output-text"
-                readOnly
-                aria-readonly="true"
-                placeholder="---"
-                value={data?.historicalPath ?? '---'}
-            />
-        </section>
-
-        <section className="output-sub-section">
-            <h3 id="related-words-title" className="output-title">
-            Related Words
-            </h3>
-            <textarea
-                id="related-words-text"
-                className="output-text"
-                readOnly
-                aria-readonly="true"
-                placeholder="---"
-                value={data?.relatedWords ?? '---'}
-            />
-        </section>
         </section>
     )
 }

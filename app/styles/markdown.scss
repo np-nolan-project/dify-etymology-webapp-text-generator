@@ -1039,3 +1039,19 @@
 .markdown-body ::-webkit-calendar-picker-indicator {
   filter: invert(50%);
 }
+
+/* Etymology Markdown Output */
+.markdown-output {
+  width: 100%;
+  max-height: 33.333vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 16px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: #fbfcfd;
+  color: var(--color-text);
+
+  overflow-wrap: anywhere;
+}

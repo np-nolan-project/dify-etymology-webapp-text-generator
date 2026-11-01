@@ -8,6 +8,6 @@ export async function POST(request: NextRequest) {
     files,
   } = body
   const { user } = getInfo(request)
-  const res = await client.runWorkflow(inputs, user, true, files)
-  return new Response(res.data as any)
+  const res = await client.runWorkflow(inputs, user, false, files)
+  return Response.json(res.data)
 }

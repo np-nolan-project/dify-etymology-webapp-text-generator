@@ -85,7 +85,7 @@ button:disabled {
   width: 100%;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 32px 72px;
+  padding: 2vw;
 }
 
 .app-header {
@@ -204,6 +204,7 @@ button:disabled {
    ------------------------------ */
 
 .output-section {
+  padding: 1em;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-large);
   background: var(--color-surface);
@@ -211,27 +212,19 @@ button:disabled {
 }
 
 .output-subsection {
-  margin: 10px;
-  padding: 10px;
+  margin-bottom: 0.5em;
+  padding: 1em;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-large);
   background: var(--color-surface);
   box-shadow: var(--shadow-surface);
 }
 
-.output-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
 .output-subheader-layout{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 0.2em;
 }
 
 .output-title {
@@ -257,11 +250,11 @@ button:disabled {
 }
 
 #prefix-section {
-  margin-bottom: 15px;
+  margin-bottom: 1em;
 }
 
 #suffix-section {
-  margin-top: 15px;
+  margin-top: 1em;
 }
 
 /* ------------------------------
@@ -281,12 +274,12 @@ button:disabled {
 
 @media (max-width: 560px) {
   .app-shell {
-    width: min(100% - 20px, var(--content-width));
-    padding-top: 40px;
+    width: min(100% - 1.25rem, var(--content-width));
+    padding-top: 2.5rem;
   }
 
   .app-header {
-    margin-bottom: 26px;
+    margin-bottom: 1.625rem;
   }
 
   .lookup-form {
@@ -298,11 +291,7 @@ button:disabled {
   }
 
   .output-section {
-    padding: 14px;
-  }
-
-  .output-text {
-    min-height: 320px;
+    padding: 0.5em;
   }
 }
 

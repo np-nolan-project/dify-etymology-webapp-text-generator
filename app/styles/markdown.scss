@@ -1043,10 +1043,10 @@
 /* Etymology Markdown Output */
 .markdown-output {
   width: 100%;
-  max-height: 33.333vh;
+  max-height: 34vh;
   overflow-y: auto;
   box-sizing: border-box;
-  padding: 16px;
+  padding: 1em;
 
   border: 1px solid var(--color-border);
   border-radius: var(--radius-medium);

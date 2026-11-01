@@ -1,5 +1,5 @@
 import { getLocaleOnServer } from '@/i18n/server'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 
 import './styles/globals.css'
 import './styles/markdown.scss'
@@ -40,4 +40,9 @@ export const metadata: Metadata = {
     'Related Words',
     'Vocabulary',
   ],
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }

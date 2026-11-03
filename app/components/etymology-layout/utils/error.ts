@@ -1,6 +1,19 @@
+
 import { CODE } from '@/app/components/etymology-layout/constants/code'
 
-export function getErrMsg(errCode: string, preDefErrMsg?: string): string {
+/**
+ * Returns a user-friendly error message based on the error code.
+ *
+ * @param errCode - A predefined error code.
+ * @param preDefErrMsg - Optional predefined error message. Used for dynamically generated error messages.
+ * @returns A formatted error message.
+ */
+export function getErrMsg(
+    errCode: string,
+    preDefErrMsg?: string
+): string {
+
+    // Error messages for predefined error codes.
     let res = "Error: ";
     switch (errCode) {
         case CODE.EMPTY_INPUT_ERROR:
@@ -13,27 +26,23 @@ export function getErrMsg(errCode: string, preDefErrMsg?: string): string {
         
         case CODE.SENSITIVE_CHECK_ERROR:
             res += "Please enter the correct expression."
-        break
-
-        case CODE.JSON_PARSE_ERROR:
-            res += `Please contact the developer with the error code ${CODE.JSON_PARSE_ERROR}.`
-        break
+            break
 
         case CODE.WORD_INCORRECT_ERROR:
             res += preDefErrMsg
-        break
+            break
 
         case CODE.LLM_ERROR:
             res += `Please contact the developer with the error code ${CODE.LLM_ERROR}.`
-        break
+            break
 
-        case CODE.JSON_FORMAT_ERROR:
-            res += `Please contact the developer with the error code ${CODE.JSON_FORMAT_ERROR}.`
-        break
+        case CODE.JSON_PARSE_ERROR:
+            res += `Please contact the developer with the error code ${CODE.JSON_PARSE_ERROR}.`
+            break
 
         case CODE.API_ERROR:
             res += `Please contact the developer with the error code ${CODE.API_ERROR}.`
-        break
+            break
 
         default:
             break

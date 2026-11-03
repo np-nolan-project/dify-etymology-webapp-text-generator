@@ -1,10 +1,19 @@
 import ReactMarkdown from 'react-markdown'
 
+/**
+ * Props for the MarkdownOutput component.
+ */
 type MarkdownOutputProps = {
     id?: string
     content: string
 }
 
+/**
+ * Renders Markdown content as HTML.
+ *
+ * @param id - Optional HTML element ID.
+ * @param content - Markdown text to render.
+ */
 export default function MarkdownOutput({
     id,
     content,
@@ -14,7 +23,7 @@ export default function MarkdownOutput({
             id={id}
             className="markdown-output markdown-body"
         >
-        <ReactMarkdown>{content}</ReactMarkdown>
+            <ReactMarkdown>{content}</ReactMarkdown>
         </div>
     )
 }

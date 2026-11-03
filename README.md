@@ -27,31 +27,82 @@ An English etymology lookup tool that analyzes word origins and structures using
 ## Architecture
 
 ```mermaid
-flowchart TB
-    subgraph SourceControl["Source Control Layer"]
+flowchart LR
+    subgraph SourceControl["Source Control"]
         GITHUB["GitHub Repository"]
     end
 
     subgraph Deployment["Deployment Layer"]
-        VERCEL["Vercel"]
-        subgraph Frontend["Frontend Layer"]
-            FE["Next.js Frontend"]
+        subgraph Frontend["Frontend"]
+            UI["UI"]
             API["Next.js API Route"]
-            FE --> API
+            UI --> API
+            API --> UI
         end
+        VERCEL["Vercel"]
     end
 
     subgraph Dify["Workflow Layer"]
         WORKFLOW["Dify Workflow"]
     end
 
-    subgraph Provider["AI Provider Layer"]
+    subgraph Provider["AI Provider"]
         MODEL["Groq / Google / OpenAI / ..."]
     end
-
+    
     GITHUB -->|Source Code / Push Trigger| VERCEL
     API -->|API Request| WORKFLOW
-    WORKFLOW -->|Model Request| MODEL
+    WORKFLOW -->|API Response| API
+    WORKFLOW ---|Model API| MODEL
+```
+
+### Workflow Layer
+
+```mermaid
+flowchart LR
+
+    START("Input")
+    LLM_CHECK["Input Checker"]
+    IN_CHECK{"Judger"}
+    LLM_COMP["Components Finder"]
+    LLM_HP["Historical Path Finder"]
+    LLM_RW["Related Words Finder"]
+    MID_CHECK{"Judger"}
+    LLM_FORM["Formatter"]
+    OUT_CHECK{{"Output Checker"}}
+    END("Output")
+
+    style LLM_CHECK stroke:blue;
+    style LLM_COMP stroke:blue;
+    style LLM_HP stroke:blue;
+    style LLM_RW stroke:blue;
+    style LLM_FORM stroke:blue;
+    style IN_CHECK stroke:green;
+    style MID_CHECK stroke:green;
+    style OUT_CHECK stroke:green;
+    
+    START --> LLM_CHECK
+    LLM_CHECK --> IN_CHECK
+    IN_CHECK --> LLM_COMP
+    IN_CHECK --> LLM_HP
+    IN_CHECK -.-> |ERR: ErrCode 1| END
+    LLM_COMP --> LLM_RW
+    LLM_HP --> MID_CHECK
+    LLM_RW --> MID_CHECK
+    MID_CHECK --> LLM_FORM
+    MID_CHECK -.-> |ERR: ErrCode 2| END
+    LLM_FORM --> OUT_CHECK
+    OUT_CHECK --> END
+    OUT_CHECK -.-> |ERR: ErrCode 3| END
+
+    subgraph LEGEND["Diagram Legend"]
+        LLM["LLM"]
+        LOGIC["Logic"]
+
+        style LLM stroke:blue;
+        style LOGIC stroke:green;
+    end
+    style LEGEND stroke:white;
 ```
 
 ## Project Structure
@@ -68,6 +119,8 @@ flowchart TB
 │   ├── components/
 │   │   ├── index.tsx
 │   │   └── etymology-layout/
+│   │       ├── types/
+│   │       │   └── etymology.ts
 │   │       ├── etymology.tsx
 │   │       ├── components/
 │   │       │   ├── InputPanel.tsx
@@ -82,19 +135,7 @@ flowchart TB
 │       ├── globals.css
 │       ├── markdown.scss
 │       └── etymology.css
-├── public/
 ├── package.json
 ├── tsconfig.json
 └── README.md
 ```
-
-## Request Flow
-
-1. The user enters an English word in the frontend.
-2. The frontend validates the input.
-3. The frontend sends the request to the Next.js API Route.
-4. The API Route forwards the request to the Dify Workflow.
-5. Dify processes the input using the Groq LLM.
-6. The result is returned to the frontend.
-7. React Markdown renders the analysis.
-8. The user can copy the results.

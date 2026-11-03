@@ -1,4 +1,3 @@
-
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -7,12 +6,24 @@ import OutputPanel from '@/app/components/etymology-layout/components/OutputPane
 import { CODE } from '@/app/components/etymology-layout/constants/code'
 import { getErrMsg } from '@/app/components/etymology-layout/utils/error'
 
+import type {
+    EtymologyData,
+    WorkflowResponse,
+} from '@/app/components/etymology-layout/types/etymology'
+
+/**
+ * Manages the application layout, API requests, and etymology results.
+ */
 const EtymologyLayout = () => {
-    // Responding mask and timer
+
+    // Application state
     const [isResponding, setIsResponding] = useState(false)
     const [elapsedTime, setElapsedTime] = useState(0)
-    
-    // Responding timer logic
+    const [etymologyData, setEtymologyData] = useState<EtymologyData | null>(null)
+
+    /**
+     * Updates the elapsed time while the API is responding.
+     */
     useEffect(() => {
         if (!isResponding) {
             setElapsedTime(0)
@@ -24,103 +35,124 @@ const EtymologyLayout = () => {
         }, 1000)
 
         return () => clearInterval(timer)
-        }, [isResponding]
-    )
+    }, [isResponding])
 
-    // The etymology result will be stored in this variable if the API is successful.
-    const [etymologyData, setEtymologyData] = useState(null)
-
-    // API request
+    /**
+     * Sends the search query to the API and processes the response.
+     *
+     * @param query - Validated English word or phrase.
+     */
     const handleSearch = async (query: string) => {
-        // Responding mask on
-        setIsResponding(true)
-        
-        // API request
-        try {
-            console.log('1. Before fetch')
 
+        // Enable the responding mask.
+        setIsResponding(true)
+
+        // Send the API request.
+        let data
+
+        try {
             const response = await fetch('/api/workflows/run', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    inputs: {
-                        query: query,
-                    },
+                    inputs: { query },
                 }),
             })
 
-            console.log('2. After fetch')
-            console.log('HTTP status:', response.status)
             if (!response.ok) {
-                console.error('API request error: response is not ok')
-                throw new Error()
+                throw new Error('API request failed')
             }
 
-            var rawRes = await response.json()
-            console.log('Response:', rawRes)
-            var rawData = rawRes.data
+            const rawRes: WorkflowResponse = await response.json()
+            data = rawRes.data
+
+            if (!data?.outputs) {
+                throw new Error('Invalid workflow response')
+            }
+
         } catch (error) {
+            console.error('API request error:', error)
             alert(getErrMsg(CODE.API_ERROR))
             return
+
         } finally {
-            // Responding mask release
+            // Disable the responding mask.
             setIsResponding(false)
         }
 
-        // Put the response data into a constant variable
-        const data = rawData
-
-        // Dify Check
+        // Check for Dify workflow errors.
         const errCode =
             data.outputs?.errCode1 ??
             data.outputs?.errCode2 ??
             data.outputs?.errCode3
+
         if (errCode) {
             alert(getErrMsg(errCode, data.outputs?.errMsg))
             return
         }
 
-        // Put the etymology result into the variable if the API is successful.
-        const returnObjStr = data.outputs?.returnObj
-        let returnObj
+        // Parse the returned etymology data.
+        let returnObj: EtymologyData
+
         try {
-            returnObj = JSON.parse(returnObjStr)
-        } catch (error) {JSON_PARSE_ERROR
+            returnObj = JSON.parse(data.outputs.returnObj)
+        } catch (error) {
+            console.error('JSON parsing error:', error)
             alert(getErrMsg(CODE.JSON_PARSE_ERROR))
+            return
         }
+
+        // Update the displayed etymology result.
         setEtymologyData(returnObj)
     }
 
     return (
         <main className="app-shell">
-        <header className="app-header">
-            <h1 className="app-title">Etymology</h1>
-            <p className="app-subtitle">
-            Deconstruct an English word or an expression.
-            </p>
-        </header>
 
-        {isResponding && (
-            <div className="responding-mask">
-                <div className="responding-msg">
-                    <div>Responding...</div>
-                    <div>
-                        {String(Math.floor(elapsedTime / 60)).padStart(2, '0')}:
-                        {String(elapsedTime % 60).padStart(2, '0')}
+            {/* Application header */}
+            <header className="app-header">
+                <h1 className="app-title">Etymology</h1>
+                <p className="app-subtitle">
+                    Deconstruct an English word or an expression.
+                </p>
+            </header>
+
+            {/* Responding mask and elapsed time */}
+            {isResponding && (
+                <div className="responding-mask">
+                    <div className="responding-msg">
+                        <div>Responding...</div>
+                        <div>
+                            {String(Math.floor(elapsedTime / 60)).padStart(2, '0')}:
+                            {String(elapsedTime % 60).padStart(2, '0')}
+                        </div>
                     </div>
                 </div>
-            </div>
-        )}
+            )}
 
-        <InputPanel onSearch={handleSearch} />
+            {/* Input and search panel */}
+            <InputPanel onSearch={handleSearch} />
 
-        <OutputPanel data={etymologyData} />
+            {/* Etymology results */}
+            <OutputPanel data={etymologyData} />
 
-        <footer className="app-footer">
-            <span>Contents are generated by AI. No commercial use.</span>
-        </footer>
+            {/* Application footer */}
+            <footer className="app-footer">
+                <span>Contents are AI-generated. No commercial use.</span>
+                <span>
+                    For more details, bug reports, or developer inquiries, visit the{' '}
+                    <a
+                        href="https://github.com/np-nolan-project/dify-etymology-webapp-text-generator"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        GitHub repository
+                    </a>.
+                </span>
+            </footer>
+
         </main>
     )
 }

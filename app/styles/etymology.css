@@ -77,6 +77,18 @@ button:disabled {
   cursor: not-allowed;
 }
 
+a {
+  text-decoration: underline;
+}
+
+a:hover {
+  color: var(--color-text);
+}
+
+a:focus {
+  color: var(--color-text);
+}
+
 /* ------------------------------
    Application layout
    ------------------------------ */
